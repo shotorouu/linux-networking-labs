@@ -1,0 +1,12 @@
+tcpdump: data link type LINUX_SLL2
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+21:58:23.925689 veth-a2 In  IP 172.16.0.2 > 172.16.128.2: ICMP echo request, id 7589, seq 2, length 64
+21:58:23.925720 veth-b2 Out IP 172.16.0.2 > 172.16.128.2: ICMP echo request, id 7589, seq 2, length 64
+21:58:23.925732 veth-b2 In  IP 172.16.128.2 > 172.16.0.2: ICMP echo reply, id 7589, seq 2, length 64
+21:58:23.925736 veth-a2 Out IP 172.16.128.2 > 172.16.0.2: ICMP echo reply, id 7589, seq 2, length 64
+21:58:24.948890 veth-a2 In  IP 172.16.0.2 > 172.16.128.2: ICMP echo request, id 7589, seq 3, length 64
+21:58:24.948905 veth-b2 Out IP 172.16.0.2 > 172.16.128.2: ICMP echo request, id 7589, seq 3, length 64
+6 packets captured
+8 packets received by filter
+0 packets dropped by kernel
