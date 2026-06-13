@@ -1,77 +1,61 @@
-#Namespaces
-ip netns add net01
-ip netns add net02
-ip netns add net03
+#!/bin/bash
+source ./conf.env
 
-#Bridge
-ip link add br0 type bridge
 
-#Veth pairs
-ip link add veth01 type veth peer host01
-ip link add veth02 type veth peer host02
-ip link add veth03 type veth peer host03
+####### Phase 1 (preparations)
 
-#Set one endpoint of veth to the namespace
-ip link set veth01 netns net01
-ip link set veth02 netns net02
-ip link set veth03 netns net03
+#ns
+for ns in "${NAMESPACES[@]}"; do
+    ip netns add "$ns"
+done
 
-#We connect veth on host side to the bridge
-ip link set host01 master br0
-ip link set host02 master br0
-ip link set host03 master br0
+#bridge
+ip link add "$BRIDGE_NAME" type bridge
 
-#On the host
-ip link set host01 up
-ip link set host02 up
-ip link set host03 up
-ip link set br0 up
+#veth pairs
+for ns in "${NAMESPACES[@]}"; do
+    ip link add "veth_${ns}" type veth peer "host_${ns}"
+    ip link set "veth_${ns}" netns "$ns"
+    ip link set "host_${ns}" master "$BRIDGE_NAME"
+done
 
-#Inside the ns
-ip netns exec net01 ip link set veth01 up
-ip netns exec net01 ip link set lo up
-ip netns exec net02 ip link set veth02 up
-ip netns exec net02 ip link set lo up
-ip netns exec net03 ip link set veth03 up
-ip netns exec net03 ip link set lo up
+#setting up the interfaces
+ip link set "$BRIDGE_NAME" up
+for ns in "${NAMESPACES[@]}"; do
+    ip link set "host_${ns}" up
+    ip netns exec "$ns" ip link set "veth_${ns}" up
+    ip netns exec "$ns" ip link set lo up
+done
 
-#Manual assignment
-#ip a add 172.22.0.1/24 dev br0
+# assign IP to the bridge
+ip a add "$BRIDGE_IP" dev "$BRIDGE_NAME"
 
-#ip netns exec net01 ip a add 172.22.0.2/24 dev veth01
-#ip netns exec net02 ip a add 172.22.0.3/24 dev veth02
-#ip netns exec net03 ip a add 172.22.0.4/24 dev veth03
+#enabling UDP ports (iptables)
+iptables -I INPUT -i "$BRIDGE_NAME" -p udp --dport 67:68 -j ACCEPT
 
-#########################
 
-#DHCP assignment
 
-#Assign IP to the bridge
-ip a add 172.22.0.1/24 dev br0
 
-#Enabling UDP ports (iptables)
-iptables -I INPUT -i br0 -p udp --dport 67:68 -j ACCEPT
-
+###### Phase 2 (DHCP confifuring)
 
 #we will use dnsmasq as a server and dhclient as a client
+apt update -y
 
-#Installing a client
-apt update && apt install isc-dhcp-client
+apt install isc-dhcp-client dnsmasq -y &> /dev/null
 
-#Installing a server and configuring it
-apt update && apt install dnsmasq
-
-ip netns exec net03 ip link set dev veth03 address 9e:03:d9:d6:a4:0e #3rd ns
-
-echo "interface=br0" > /etc/dnsmasq.conf
+ip netns exec "$STATIC_NS" ip link set dev "veth_${STATIC_NS}" address "$STATIC_MAC" #3rd ns
+echo "interface=$BRIDGE_NAME" > /etc/dnsmasq.conf
 echo "bind-interfaces" >> /etc/dnsmasq.conf
-echo "dhcp-range=172.22.0.50,172.22.0.100,12h" >> /etc/dnsmasq.conf # range
-echo "dhcp-host=9e:03:d9:d6:a4:0e,net03,172.22.0.99" >> /etc/dnsmasq.conf # define for 3rd ns
+echo "dhcp-range=$DHCP_RANGE" >> /etc/dnsmasq.conf # range
+echo "dhcp-host=$STATIC_MAC,$STATIC_NS,$STATIC_IP" >> /etc/dnsmasq.conf # defined for 3rd ns
 systemctl restart dnsmasq
 
-#Final steps (Request and assignment, "DORA")
-ip netns exec net01 dhclient veth01
-ip netns exec net02 dhclient veth02
-ip netns exec net03 dhclient veth03 
 
+
+###### Phase 3 (Assignment)
+
+#request and assignment, DORA
+for ns in "${NAMESPACES[@]}"; do
+    ip netns exec "$ns" dhclient "veth_${ns}" &> /dev/null
+done
 
