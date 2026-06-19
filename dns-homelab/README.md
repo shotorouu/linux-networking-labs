@@ -1,4 +1,4 @@
-#linux-networking-labs/dns-homelab
+# linux-networking-labs/dns-homelab
 
 This is a lab for DNS practice. Main goal - create network L2 isolation on the host, configure DNS
 at host machine and enable namespaces to utilize the host as **DNS Recursive Resolver**
