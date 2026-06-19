@@ -1,9 +1,9 @@
 # linux-networking-labs/dns-homelab
 
-This is a lab for DNS practice. Main goal - create network L2 isolation on the host, configure DNS
-at host machine and enable namespaces to utilize the host as **DNS Recursive Resolver**
+This is a lab for DNS practice. Main goal - create network L2 isolation, configure the host
+machine as DNS and enable namespaces to utilize the host as **DNS Recursive Resolver**
 
-I have done this project using dnsmasq. Also i used the environment preparation script and also cleanup
+I have done this project using dnsmasq. Also i used the environment preparation script and cleanup
 script from the previous project 
 
 I divided the process into three phases
