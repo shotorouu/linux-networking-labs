@@ -19,4 +19,6 @@ script from the previous project
 5. Instead of uskng host files, dnsmasq reads the server=8.8.4.4 directive and routes the query to the external upstream DNS network via our host interface using NAT, Masquerade
 
 Configure the conf.env file to your needs
-You can see all photos in the ".images/" directory.
+
+You can see all the photos below and in the ".images/" directory.
+![22](./images/main.webp)
