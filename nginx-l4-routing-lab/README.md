@@ -8,4 +8,4 @@ Run it by simply writing:
 ```docker compose up -d```
 
 You can see all the photos below and also in the ".images/" directory.
-![1](./screenshot.webp)
+![1](./images/screenshot.webp)
