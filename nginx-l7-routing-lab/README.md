@@ -31,3 +31,7 @@ curl -k -i https://10.15.0.100/api/ # api secure 200
 
 You can see all the photos below and also in ./images:
 
+![1](./images/11.webp)
+![2](./images/22.webp)
+![3](./images/33.webp)
+![4](./images/44.webp)
