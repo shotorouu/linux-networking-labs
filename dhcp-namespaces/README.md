@@ -44,4 +44,6 @@ Configure the conf.env file to your needs
 By the way, you have cleanup.sh script so you can run script without 
 any doubts. Everything will be ceared automatically 
 
-You can see all photos in the ".images/" directory.
+You can see all the photos below and in the ".images/" directory.
+![11](./images/dora-tcdump.webp)
+![11](./images/ip-a-output.webp)
