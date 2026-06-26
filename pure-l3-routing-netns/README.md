@@ -32,4 +32,6 @@ gateway to forward the frame. Also, we can see that TTL equal to 63,
 the linux kernel decrements the TTL by 1
 during the routing
 
-You can see the photos and logs in ".images/" directory, also in the "router.log" file. 
+You can see all the photos below and in the ".images/" directory. Also there are logs in the "router.log" file. 
+![1](./images/photo-1.webp)
+![2](./images/photo-2.webp)
